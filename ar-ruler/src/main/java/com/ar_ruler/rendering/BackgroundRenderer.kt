@@ -81,9 +81,9 @@ class BackgroundRenderer {
         ShaderUtil.checkGLError(TAG, "Program parameters")
     }
 
-    fun suppressTimestampZeroRendering(suppressTimestampZeroRendering: Boolean) {
-        this.suppressTimestampZeroRendering = suppressTimestampZeroRendering
-    }
+//    fun suppressTimestampZeroRendering(suppressTimestampZeroRendering: Boolean) {
+//        this.suppressTimestampZeroRendering = suppressTimestampZeroRendering
+//    }
 
     /**
      * Draws the AR background image. The image will be drawn such that virtual content rendered with
@@ -111,43 +111,43 @@ class BackgroundRenderer {
         draw()
     }
 
-    /**
-     * Draws the camera image using the currently configured [BackgroundRenderer.quadTexCoords]
-     * image texture coordinates.
-     *
-     *
-     * The image will be center cropped if the camera sensor aspect ratio does not match the screen
-     * aspect ratio, which matches the cropping behavior of [ ][Frame.transformCoordinates2d].
-     */
-    fun draw(
-        imageWidth: Int, imageHeight: Int, screenAspectRatio: Float, cameraToDisplayRotation: Int,
-    ) {
-        // Crop the camera image to fit the screen aspect ratio.
-        val imageAspectRatio = imageWidth.toFloat() / imageHeight
-        val croppedWidth: Float
-        val croppedHeight: Float
-        if (screenAspectRatio < imageAspectRatio) {
-            croppedWidth = imageHeight * screenAspectRatio
-            croppedHeight = imageHeight.toFloat()
-        } else {
-            croppedWidth = imageWidth.toFloat()
-            croppedHeight = imageWidth / screenAspectRatio
-        }
-        val u = (imageWidth - croppedWidth) / imageWidth * 0.5f
-        val v = (imageHeight - croppedHeight) / imageHeight * 0.5f
-        val texCoordTransformed: FloatArray = when (cameraToDisplayRotation) {
-                90 -> floatArrayOf(1 - u, 1 - v, u, 1 - v, 1 - u, v, u, v)
-                180 -> floatArrayOf(1 - u, v, 1 - u, 1 - v, u, v, u, 1 - v)
-                270 -> floatArrayOf(u, v, 1 - u, v, u, 1 - v, 1 - u, 1 - v)
-                0 -> floatArrayOf(u, 1 - v, u, v, 1 - u, 1 - v, 1 - u, v)
-                else -> throw IllegalArgumentException("Unhandled rotation: $cameraToDisplayRotation")
-            }
-
-        // Write image texture coordinates.
-        quadTexCoords?.position(0)
-        quadTexCoords?.put(texCoordTransformed)
-        draw()
-    }
+//    /**
+//     * Draws the camera image using the currently configured [BackgroundRenderer.quadTexCoords]
+//     * image texture coordinates.
+//     *
+//     *
+//     * The image will be center cropped if the camera sensor aspect ratio does not match the screen
+//     * aspect ratio, which matches the cropping behavior of [ ][Frame.transformCoordinates2d].
+//     */
+//    fun draw(
+//        imageWidth: Int, imageHeight: Int, screenAspectRatio: Float, cameraToDisplayRotation: Int,
+//    ) {
+//        // Crop the camera image to fit the screen aspect ratio.
+//        val imageAspectRatio = imageWidth.toFloat() / imageHeight
+//        val croppedWidth: Float
+//        val croppedHeight: Float
+//        if (screenAspectRatio < imageAspectRatio) {
+//            croppedWidth = imageHeight * screenAspectRatio
+//            croppedHeight = imageHeight.toFloat()
+//        } else {
+//            croppedWidth = imageWidth.toFloat()
+//            croppedHeight = imageWidth / screenAspectRatio
+//        }
+//        val u = (imageWidth - croppedWidth) / imageWidth * 0.5f
+//        val v = (imageHeight - croppedHeight) / imageHeight * 0.5f
+//        val texCoordTransformed: FloatArray = when (cameraToDisplayRotation) {
+//                90 -> floatArrayOf(1 - u, 1 - v, u, 1 - v, 1 - u, v, u, v)
+//                180 -> floatArrayOf(1 - u, v, 1 - u, 1 - v, u, v, u, 1 - v)
+//                270 -> floatArrayOf(u, v, 1 - u, v, u, 1 - v, 1 - u, 1 - v)
+//                0 -> floatArrayOf(u, 1 - v, u, v, 1 - u, 1 - v, 1 - u, v)
+//                else -> throw IllegalArgumentException("Unhandled rotation: $cameraToDisplayRotation")
+//            }
+//
+//        // Write image texture coordinates.
+//        quadTexCoords?.position(0)
+//        quadTexCoords?.put(texCoordTransformed)
+//        draw()
+//    }
 
     /**
      * Draws the camera background image using the currently configured [ ][BackgroundRenderer.quadTexCoords] image texture coordinates.

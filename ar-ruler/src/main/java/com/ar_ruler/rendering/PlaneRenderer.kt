@@ -1,36 +1,23 @@
 package com.ar_ruler.rendering
 
-import android.content.Context
-import android.graphics.BitmapFactory
-import android.opengl.GLES20
-import android.opengl.GLUtils
-import android.opengl.Matrix
-import com.google.ar.core.Plane
 import com.google.ar.core.Pose
-import com.google.ar.core.TrackingState
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.nio.FloatBuffer
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
 
 class PlaneRenderer {
     companion object {
-        private val TAG = PlaneRenderer::class.java.simpleName
+//        private val TAG = PlaneRenderer::class.java.simpleName
 
-        private const val VERTEX_SHADER_NAME = "shaders/plane.vert"
-        private const val FRAGMENT_SHADER_NAME = "shaders/plane.frag"
+//        private const val VERTEX_SHADER_NAME = "shaders/plane.vert"
+//        private const val FRAGMENT_SHADER_NAME = "shaders/plane.frag"
 
-        private const val BYTES_PER_FLOAT = java.lang.Float.SIZE / 8
-        private const val BYTES_PER_SHORT = java.lang.Short.SIZE / 8
-        private const val COORDS_PER_VERTEX = 3 // x, z, alpha
+//        private const val BYTES_PER_FLOAT = java.lang.Float.SIZE / 8
+//        private const val BYTES_PER_SHORT = java.lang.Short.SIZE / 8
+//        private const val COORDS_PER_VERTEX = 3 // x, z, alpha
 
-        private const val VERTS_PER_BOUNDARY_VERT = 2
-        private const val INDICES_PER_BOUNDARY_VERT = 3
-        private const val INITIAL_BUFFER_BOUNDARY_VERTS = 64
+//        private const val VERTS_PER_BOUNDARY_VERT = 2
+//        private const val INDICES_PER_BOUNDARY_VERT = 3
+//        private const val INITIAL_BUFFER_BOUNDARY_VERTS = 64
 
-        private const val INITIAL_VERTEX_BUFFER_SIZE_BYTES = (
+        /*private const val INITIAL_VERTEX_BUFFER_SIZE_BYTES = (
                 BYTES_PER_FLOAT
                         * COORDS_PER_VERTEX
                         * VERTS_PER_BOUNDARY_VERT
@@ -42,18 +29,18 @@ class PlaneRenderer {
                         * INDICES_PER_BOUNDARY_VERT
                         * INDICES_PER_BOUNDARY_VERT
                         * INITIAL_BUFFER_BOUNDARY_VERTS
-                )
+                )*/
 
-        private const val FADE_RADIUS_M = 0.25f
-        private const val DOTS_PER_METER = 10.0f
-        private val EQUILATERAL_TRIANGLE_SCALE = (1 / sqrt(3.0)).toFloat()
+//        private const val FADE_RADIUS_M = 0.25f
+//        private const val DOTS_PER_METER = 10.0f
+//        private val EQUILATERAL_TRIANGLE_SCALE = (1 / sqrt(3.0)).toFloat()
 
         // Using the "signed distance field" approach to render sharp lines and circles.
         // {dotThreshold, lineThreshold, lineFadeSpeed, occlusionScale}
         // dotThreshold/lineThreshold: red/green intensity above which dots/lines are present
         // lineFadeShrink:  lines will fade in between alpha = 1-(1/lineFadeShrink) and 1.0
         // occlusionShrink: occluded planes will fade out between alpha = 0 and 1/occlusionShrink
-        private val GRID_CONTROL = floatArrayOf(0.2f, 0.4f, 2.0f, 1.5f)
+//        private val GRID_CONTROL = floatArrayOf(0.2f, 0.4f, 2.0f, 1.5f)
 
         fun calculateDistanceToPlane(planePose: Pose, cameraPose: Pose): Float {
             val normal = FloatArray(3)
@@ -67,37 +54,37 @@ class PlaneRenderer {
         }
     }
 
-    private var planeProgram = 0
-    private val textures = IntArray(1)
+//    private var planeProgram = 0
+//    private val textures = IntArray(1)
 
-    private var planeXZPositionAlphaAttribute = 0
+//    private var planeXZPositionAlphaAttribute = 0
 
-    private var planeModelUniform = 0
-    private var planeNormalUniform = 0
-    private var planeModelViewProjectionUniform = 0
-    private var textureUniform = 0
-    private var lineColorUniform = 0
-    private var dotColorUniform = 0
-    private var gridControlUniform = 0
-    private var planeUvMatrixUniform = 0
+//    private var planeModelUniform = 0
+//    private var planeNormalUniform = 0
+//    private var planeModelViewProjectionUniform = 0
+//    private var textureUniform = 0
+//    private var lineColorUniform = 0
+//    private var dotColorUniform = 0
+//    private var gridControlUniform = 0
+//    private var planeUvMatrixUniform = 0
 
-    private var vertexBuffer = ByteBuffer.allocateDirect(INITIAL_VERTEX_BUFFER_SIZE_BYTES)
+    /*private var vertexBuffer = ByteBuffer.allocateDirect(INITIAL_VERTEX_BUFFER_SIZE_BYTES)
         .order(ByteOrder.nativeOrder())
         .asFloatBuffer()
     private var indexBuffer = ByteBuffer.allocateDirect(INITIAL_INDEX_BUFFER_SIZE_BYTES)
         .order(ByteOrder.nativeOrder())
-        .asShortBuffer()
+        .asShortBuffer()*/
 
     // Temporary lists/matrices allocated here to reduce number of allocations for each frame.
-    private val modelMatrix = FloatArray(16)
-    private val modelViewMatrix = FloatArray(16)
-    private val modelViewProjectionMatrix = FloatArray(16)
-    private val planeColor = floatArrayOf(1f, 1f, 1f, 1f)
-    private val planeAngleUvMatrix = FloatArray(4) // 2x2 rotation matrix applied to uv coords.
+//    private val modelMatrix = FloatArray(16)
+//    private val modelViewMatrix = FloatArray(16)
+//    private val modelViewProjectionMatrix = FloatArray(16)
+//    private val planeColor = floatArrayOf(1f, 1f, 1f, 1f)
+//    private val planeAngleUvMatrix = FloatArray(4) // 2x2 rotation matrix applied to uv coords.
 
-    private val planeIndexMap: MutableMap<Plane, Int> = HashMap()
+//    private val planeIndexMap: MutableMap<Plane, Int> = HashMap()
 
-    fun createOnGlThread(context: Context, gridDistanceTextureName: String) {
+    /*fun createOnGlThread(context: Context, gridDistanceTextureName: String) {
         val vertexShader: Int = ShaderUtil.loadGLShader(TAG, context, GLES20.GL_VERTEX_SHADER, VERTEX_SHADER_NAME)
         val passthroughShader: Int =
             ShaderUtil.loadGLShader(TAG, context, GLES20.GL_FRAGMENT_SHADER, FRAGMENT_SHADER_NAME)
@@ -132,9 +119,9 @@ class PlaneRenderer {
         gridControlUniform = GLES20.glGetUniformLocation(planeProgram, "u_gridControl")
         planeUvMatrixUniform = GLES20.glGetUniformLocation(planeProgram, "u_PlaneUvMatrix")
         ShaderUtil.checkGLError(TAG, "Program parameters")
-    }
+    }*/
 
-    private fun updatePlaneParameters(
+    /*private fun updatePlaneParameters(
         planeMatrix: FloatArray, extentX: Float, extentZ: Float, boundary: FloatBuffer?,
     ) {
         System.arraycopy(planeMatrix, 0, modelMatrix, 0, 16)
@@ -203,9 +190,9 @@ class PlaneRenderer {
         if (boundaryVertices % 2 != 0) {
             indexBuffer.put((boundaryVertices / 2 * 2 + 1).toShort())
         }
-    }
+    }*/
 
-    private fun draw(cameraView: FloatArray, cameraPerspective: FloatArray, planeNormal: FloatArray) {
+    /*private fun draw(cameraView: FloatArray, cameraPerspective: FloatArray, planeNormal: FloatArray) {
         // Build the ModelView and ModelViewProjection matrices
         // for calculating cube position and light.
         Matrix.multiplyMM(modelViewMatrix, 0, cameraView, 0, modelMatrix, 0)
@@ -233,11 +220,11 @@ class PlaneRenderer {
             GLES20.GL_TRIANGLE_STRIP, indexBuffer.limit(), GLES20.GL_UNSIGNED_SHORT, indexBuffer
         )
         ShaderUtil.checkGLError(TAG, "Drawing plane")
-    }
+    }*/
 
-    internal class SortablePlane(val distance: Float, val plane: Plane)
+//    internal class SortablePlane(val distance: Float, val plane: Plane)
 
-    fun drawPlanes(allPlanes: Collection<Plane>?, cameraPose: Pose, cameraPerspective: FloatArray) {
+    /*fun drawPlanes(allPlanes: Collection<Plane>?, cameraPose: Pose, cameraPerspective: FloatArray) {
         allPlanes ?: return
 
         // Planes must be sorted by distance from camera so that we draw closer planes first, and
@@ -337,9 +324,5 @@ class PlaneRenderer {
         GLES20.glDepthMask(true)
         GLES20.glClearColor(0.1f, 0.1f, 0.1f, 1.0f)
         ShaderUtil.checkGLError(TAG, "Cleaning up after drawing planes")
-    }
-
-    // Calculate the normal distance to plane from cameraPose, the given planePose should have y axis
-    // parallel to plane's normal, for example plane's center pose or hit test pose.
-
+    }*/
 }

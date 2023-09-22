@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RulerFragment">
+    tools:context=".ArRulerFragment">
 
     <android.opengl.GLSurfaceView
         android:id="@+id/gl_surface_view"
@@ -81,6 +81,7 @@
         app:layout_constraintStart_toStartOf="@id/add_point_button_container"
         app:layout_constraintTop_toTopOf="@id/add_point_button_container" />
 
+    <!-- add_point_button_container -->
     <FrameLayout
         android:id="@+id/add_point_button_container"
         android:layout_width="90dp"
@@ -100,9 +101,9 @@
             android:fontFamily="@font/poppins_semibold"
             android:gravity="center"
             android:paddingTop="3dp"
-            android:text="@string/a"
             android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            tools:text="A" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="44dp"
@@ -112,6 +113,7 @@
 
     </FrameLayout>
 
+    <!-- find_surface_container -->
     <LinearLayout
         android:id="@+id/find_surface_container"
         android:layout_width="match_parent"
@@ -144,6 +146,7 @@
 
     </LinearLayout>
 
+    <!-- pop_up_container -->
     <FrameLayout
         android:id="@+id/pop_up_container"
         android:layout_width="match_parent"
@@ -326,6 +329,7 @@
 
     </FrameLayout>
 
+    <!-- too_dark_container -->
     <LinearLayout
         android:id="@+id/too_dark_container"
         android:layout_width="wrap_content"
@@ -367,5 +371,25 @@
             tools:text="Additional lighting is needed. Please add more lighting" />
 
     </LinearLayout>
+
+    <!-- error -->
+    <TextView
+        android:id="@+id/error_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="68dp"
+        android:background="@drawable/bg_find_surface"
+        android:fontFamily="@font/poppins_medium"
+        android:gravity="center"
+        android:paddingTop="78dp"
+        android:paddingBottom="78dp"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Move around" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

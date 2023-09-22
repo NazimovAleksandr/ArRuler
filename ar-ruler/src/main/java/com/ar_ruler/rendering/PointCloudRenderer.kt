@@ -41,6 +41,7 @@ class PointCloudRenderer {
      *
      * @param context Needed to access shader source.
      */
+    @Suppress("KDocUnresolvedReference")
     fun createOnGlThread(context: Context) {
         ShaderUtil.checkGLError(TAG, "before create")
         val buffers = IntArray(1)

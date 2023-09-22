@@ -1,6 +1,8 @@
 package com.ar_ruler
 
 class StringValue(
+    val a: String,
+    val b: String,
     val addPointA: String,
     val addPointB: String,
     val moveAround: String,

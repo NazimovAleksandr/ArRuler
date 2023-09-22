@@ -204,14 +204,14 @@ class ObjectRenderer {
         ShaderUtil.checkGLError(TAG, "Texture loading")
     }
 
-    /**
-     * Selects the blending mode for rendering.
-     *
-     * @param blendMode The blending mode. Null indicates no blending (opaque rendering).
-     */
-    fun setBlendMode(blendMode: BlendMode?) {
-        this.blendMode = blendMode
-    }
+//    /**
+//     * Selects the blending mode for rendering.
+//     *
+//     * @param blendMode The blending mode. Null indicates no blending (opaque rendering).
+//     */
+//    fun setBlendMode(blendMode: BlendMode?) {
+//        this.blendMode = blendMode
+//    }
 
     /**
      * Updates the object model matrix and applies scaling.
@@ -229,23 +229,23 @@ class ObjectRenderer {
         Matrix.multiplyMM(this.modelMatrix, 0, modelMatrix, 0, scaleMatrix, 0)
     }
 
-    /**
-     * Sets the surface characteristics of the rendered model.
-     *
-     * @param ambient Intensity of non-directional surface illumination.
-     * @param diffuse Diffuse (matte) surface reflectivity.
-     * @param specular Specular (shiny) surface reflectivity.
-     * @param specularPower Surface shininess. Larger values result in a smaller, sharper specular
-     * highlight.
-     */
-    fun setMaterialProperties(
-        ambient: Float, diffuse: Float, specular: Float, specularPower: Float,
-    ) {
-        this.ambient = ambient
-        this.diffuse = diffuse
-        this.specular = specular
-        this.specularPower = specularPower
-    }
+//    /**
+//     * Sets the surface characteristics of the rendered model.
+//     *
+//     * @param ambient Intensity of non-directional surface illumination.
+//     * @param diffuse Diffuse (matte) surface reflectivity.
+//     * @param specular Specular (shiny) surface reflectivity.
+//     * @param specularPower Surface shininess. Larger values result in a smaller, sharper specular
+//     * highlight.
+//     */
+//    fun setMaterialProperties(
+//        ambient: Float, diffuse: Float, specular: Float, specularPower: Float,
+//    ) {
+//        this.ambient = ambient
+//        this.diffuse = diffuse
+//        this.specular = specular
+//        this.specularPower = specularPower
+//    }
 
     fun draw(
         cameraView: FloatArray,

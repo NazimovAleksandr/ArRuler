@@ -1,13 +1,11 @@
 package com.ar_ruler.halpers
 
 import android.content.Context
-import android.hardware.camera2.CameraAccessException
-import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.hardware.display.DisplayManager
 import android.hardware.display.DisplayManager.DisplayListener
+import android.os.Build
 import android.view.Display
-import android.view.Surface
 import android.view.WindowManager
 import com.google.ar.core.Session
 
@@ -26,7 +24,13 @@ class DisplayRotationHelper(
         displayManager = context.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
         cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        display = windowManager.defaultDisplay // todo
+
+        display = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            context.display
+        }  else {
+            @Suppress("DEPRECATION")
+            windowManager.defaultDisplay
+        }
     }
 
     override fun onDisplayAdded(displayId: Int) {}
@@ -59,7 +63,7 @@ class DisplayRotationHelper(
         }
     }
 
-    fun getCameraSensorRelativeViewportAspectRatio(cameraId: String): Float {
+    /*fun getCameraSensorRelativeViewportAspectRatio(cameraId: String): Float {
         return when (getCameraSensorToDisplayRotation(cameraId)) {
             90, 270 -> viewportHeight.toFloat() / viewportWidth.toFloat()
             else -> viewportWidth.toFloat() / viewportHeight.toFloat()
@@ -87,5 +91,5 @@ class DisplayRotationHelper(
             Surface.ROTATION_270 -> 270
             else -> 0
         }
-    }
+    }*/
 }
