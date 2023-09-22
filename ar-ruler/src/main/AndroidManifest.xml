@@ -13,7 +13,7 @@
 
     <application>
         <activity
-            android:name=".ArRulerActivity"
+            android:name=".ARRulerActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
 

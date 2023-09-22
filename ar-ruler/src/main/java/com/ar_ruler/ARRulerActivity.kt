@@ -7,7 +7,7 @@ import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 
-class ArRulerActivity : AppCompatActivity() {
+class ARRulerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ar_ruler)
@@ -24,7 +24,7 @@ class ArRulerActivity : AppCompatActivity() {
         if (supportFragmentManager.findFragmentById(R.id.fragment_container) == null) {
             supportFragmentManager
                 .beginTransaction()
-                .add(R.id.fragment_container, ArRulerFragment())
+                .add(R.id.fragment_container, ARRulerFragment())
                 .commit()
         }
     }
@@ -52,12 +52,12 @@ class ArRulerActivity : AppCompatActivity() {
             onClickTutorial: (View) -> Unit,
             onClickExercises: (View) -> Unit,
         ) {
-            ArRulerFragment.stringValue = stringValue
-            ArRulerFragment.onClickTutorial = onClickTutorial
-            ArRulerFragment.onClickExercises = onClickExercises
+            ARRulerFragment.stringValue = stringValue
+            ARRulerFragment.onClickTutorial = onClickTutorial
+            ARRulerFragment.onClickExercises = onClickExercises
 
             context.startActivity(
-                Intent(context, ArRulerActivity::class.java)
+                Intent(context, ARRulerActivity::class.java)
             )
         }
     }

@@ -57,7 +57,7 @@ import javax.vecmath.Vector3f
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-class ArRulerFragment : Fragment(), GLSurfaceView.Renderer {
+class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
 
     companion object {
         private const val CAMERA_PERMISSION = Manifest.permission.CAMERA

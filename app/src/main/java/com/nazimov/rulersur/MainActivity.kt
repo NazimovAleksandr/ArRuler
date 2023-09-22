@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.ar_ruler.ArRulerActivity
+import com.ar_ruler.ARRulerActivity
 import com.ar_ruler.StringValue
 
 class MainActivity : AppCompatActivity() {
@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openArRulerActivity(screenName: String) {
-        ArRulerActivity.start(
+        ARRulerActivity.start(
             context = this,
             stringValue = StringValue(
                 a = "A",
