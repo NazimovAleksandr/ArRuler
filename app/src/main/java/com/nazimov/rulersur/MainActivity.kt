@@ -15,27 +15,36 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.ruler_button).also {
             it.setOnClickListener {
-                ArRulerActivity.start(
-                    context = this,
-                    stringValue = StringValue(
-                        a = "A",
-                        b = "B",
-                        addPointA = "Add Point A",
-                        addPointB = "Add Point B",
-                        moveAround = "Move Around",
-                        tooDark = "It's too dark",
-                        tooDarkDescription = "Additional lighting is needed. Please add more lighting",
-                        popUpInch = "in",
-                        popUpCentimeters = "centimeters",
-                        popUpTitle = "Get big and boost your size!",
-                        popUpSubtitle = "Say hello to epic growth with exercise program",
-                        popUpButton = "EXERCISES",
-                    ),
-                    onClickTutorial = {
-                        Toast.makeText(this, "onClickTutorial", Toast.LENGTH_SHORT).show()
-                    },
-                )
+                openArRulerActivity("Move Around")
             }
         }
+    }
+
+    private fun openArRulerActivity(screenName: String) {
+        ArRulerActivity.start(
+            context = this,
+            stringValue = StringValue(
+                a = "A",
+                b = "B",
+                addPointA = "Add Point A",
+                addPointB = "Add Point B",
+                moveAround = screenName,
+                tooDark = "It's too dark",
+                tooDarkDescription = "Additional lighting is needed. Please add more lighting",
+                popUpInch = "in",
+                popUpCentimeters = "centimeters",
+                popUpTitle = "Get big and boost your size!",
+                popUpSubtitle = "Say hello to epic growth with exercise program",
+                popUpButton = "EXERCISES",
+            ),
+            onClickTutorial = {
+                Toast.makeText(this, "Click Tutorial", Toast.LENGTH_SHORT).show()
+                openArRulerActivity("Tutorial")
+            },
+            onClickExercises = {
+                Toast.makeText(this, "Click Exercises", Toast.LENGTH_SHORT).show()
+                openArRulerActivity("Exercises")
+            }
+        )
     }
 }

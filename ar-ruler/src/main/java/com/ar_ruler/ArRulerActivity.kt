@@ -32,8 +32,8 @@ class ArRulerActivity : AppCompatActivity() {
     companion object {
         /**
          * @param stringValue defaultValue = StringValue(
-         *             a = "A",
-         *             b = "B",
+         *             a = "a", // ignoreCase
+         *             b = "b", // ignoreCase
          *             addPointA = "Add Point A",
          *             addPointB = "Add Point B",
          *             moveAround = "Move Around",
@@ -43,16 +43,18 @@ class ArRulerActivity : AppCompatActivity() {
          *             popUpCentimeters = "centimeters",
          *             popUpTitle = "Get big and boost your size!",
          *             popUpSubtitle = "Say hello to epic growth with exercise program",
-         *             popUpButton = "EXERCISES",
+         *             popUpButton = "Exercises", // ignoreCase
          *         )
          */
         fun start(
             context: Context,
             stringValue: StringValue,
             onClickTutorial: (View) -> Unit,
+            onClickExercises: (View) -> Unit,
         ) {
             ArRulerFragment.stringValue = stringValue
             ArRulerFragment.onClickTutorial = onClickTutorial
+            ArRulerFragment.onClickExercises = onClickExercises
 
             context.startActivity(
                 Intent(context, ArRulerActivity::class.java)

@@ -63,10 +63,11 @@ class ArRulerFragment : Fragment(), GLSurfaceView.Renderer {
         private const val CAMERA_PERMISSION = Manifest.permission.CAMERA
 
         var onClickTutorial: ((View) -> Unit)? = null
+        var onClickExercises: ((View) -> Unit)? = null
 
         var stringValue: StringValue = StringValue(
-            a = "A",
-            b = "B",
+            a = "a",
+            b = "b",
             addPointA = "Add Point A",
             addPointB = "Add Point B",
             moveAround = "Move Around",
@@ -76,7 +77,7 @@ class ArRulerFragment : Fragment(), GLSurfaceView.Renderer {
             popUpCentimeters = "centimeters",
             popUpTitle = "Get big and boost your size!",
             popUpSubtitle = "Say hello to epic growth with exercise program",
-            popUpButton = "EXERCISES",
+            popUpButton = "Exercises",
         )
     }
 
@@ -124,11 +125,7 @@ class ArRulerFragment : Fragment(), GLSurfaceView.Renderer {
     private var surfaceWidth = 0f
     private var surfaceHeight = 0f
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentArRulerBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -233,10 +230,18 @@ class ArRulerFragment : Fragment(), GLSurfaceView.Renderer {
             requireActivity().onBackPressed()
         }
 
-        binding.popUpButton.setOnClickListener { }
-
         binding.popUpButtonReset.setOnClickListener {
             onClear()
+        }
+
+        binding.popUpButtonCloseRuler.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
+        binding.popUpButton.setOnClickListener {
+            requireActivity().finish()
+            onClickExercises?.invoke(it)
+            onClickExercises = null
         }
 
         binding.tutorialButton.setOnClickListener(onClickTutorial)
