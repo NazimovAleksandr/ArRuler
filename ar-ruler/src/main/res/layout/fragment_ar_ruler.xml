@@ -6,6 +6,50 @@
     android:layout_height="match_parent"
     tools:context=".ARRulerFragment">
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/screen_state_find_surface"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:constraint_referenced_ids="
+        top_buttons,
+        find_surface_container" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/screen_state_too_dark"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:constraint_referenced_ids="
+        too_dark_container" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/screen_state_result"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:constraint_referenced_ids="
+        pop_up_container" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/screen_state_add_point"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:constraint_referenced_ids="
+        top_buttons,
+        description_add_point_button,
+        add_point_button_shadow,
+        add_point_button_container" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/top_buttons"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:constraint_referenced_ids="
+        back_button,
+        tutorial_button" />
+
     <android.opengl.GLSurfaceView
         android:id="@+id/gl_surface_view"
         android:layout_width="0dp"
@@ -15,14 +59,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/top_buttons"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:constraint_referenced_ids="
-        back_button,
-        tutorial_button" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/back_button"
@@ -43,16 +79,6 @@
         android:src="@drawable/button_tutorial"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/add_point_button_group"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:constraint_referenced_ids="
-        description_add_point_button,
-        add_point_button_container,
-        add_point_button_shadow" />
 
     <TextView
         android:id="@+id/description_add_point_button"
@@ -354,7 +380,6 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -370,7 +395,6 @@
             android:id="@+id/too_dark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
             android:fontFamily="@font/poppins_semibold"
             android:textColor="@color/white"
             android:textSize="18sp"
@@ -381,11 +405,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="62dp"
-            android:fontFamily="@font/poppins_semibold"
+            android:fontFamily="@font/poppins_medium"
             android:gravity="center"
-            android:lineSpacingExtra="-5sp"
+            android:lineSpacingExtra="-4sp"
             android:textColor="@color/white"
-            android:textSize="18sp"
+            android:textSize="16sp"
             tools:text="Additional lighting is needed. Please add more lighting" />
 
     </LinearLayout>

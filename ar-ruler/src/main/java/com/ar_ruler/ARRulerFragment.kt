@@ -20,6 +20,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.ar_ruler.databinding.FragmentArRulerBinding
 import com.ar_ruler.halpers.DisplayRotationHelper
@@ -38,7 +39,6 @@ import com.google.ar.core.Frame
 import com.google.ar.core.Plane
 import com.google.ar.core.Point
 import com.google.ar.core.Session
-import com.google.ar.core.TrackingFailureReason
 import com.google.ar.core.TrackingState
 import com.google.ar.core.exceptions.CameraNotAvailableException
 import com.google.ar.core.exceptions.UnavailableApkTooOldException
@@ -46,16 +46,12 @@ import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException
 import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException
-import com.google.ar.sceneform.AnchorNode
-import com.google.ar.sceneform.math.Vector3
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import javax.vecmath.Vector3f
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
 
@@ -83,6 +79,10 @@ class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
 
     private var _binding: FragmentArRulerBinding? = null
     private val binding: FragmentArRulerBinding get() = _binding!!
+
+    private val viewModel: ARRulerViewModel by viewModels {
+        ARRulerViewModelFactory()
+    }
 
     private val vectorX by lazy { binding.root.width / 2f }
     private val vectorY by lazy { binding.root.height / 2f }
@@ -136,6 +136,7 @@ class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
         initScreen()
         initGLSurfaceView()
         initListener()
+        initViewModel()
     }
 
     override fun onResume() {
@@ -185,7 +186,7 @@ class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
 
             backgroundRenderer.draw(frame)
 
-            checkCameraState(frame, camera)
+            viewModel.checkCameraState(frame, camera, session, ::drawRuler)
         } catch (ignore: Throwable) {
         }
     }
@@ -248,6 +249,56 @@ class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
         onClickTutorial = null
     }
 
+    private fun initViewModel() {
+        lifecycleScope.launch {
+            viewModel.screenState.collect {
+                hideAll()
+
+                when (it) {
+                    is ScreenState.FindSurface -> findSurface()
+                    is ScreenState.TooDark -> tooDark()
+                    is ScreenState.AddPoint -> addPointA()
+                    is ScreenState.Result -> result(it)
+
+                    is ScreenState.Error -> error(it.message)
+                }
+            }
+        }
+    }
+
+    private fun hideAll() {
+        binding.screenStateFindSurface.isVisible = false
+        binding.screenStateTooDark.isVisible = false
+        binding.screenStateAddPoint.isVisible = false
+        binding.screenStateResult.isVisible = false
+    }
+
+    private fun findSurface() {
+        binding.screenStateFindSurface.isVisible = true
+    }
+
+    private fun tooDark() {
+        binding.screenStateTooDark.isVisible = true
+    }
+
+    private fun addPointA() {
+        binding.descriptionAddPointButton.text = stringValue.addPointA
+        binding.addPointButton.text = stringValue.a
+        binding.screenStateAddPoint.isVisible = true
+    }
+
+    private fun result(screenState: ScreenState.Result) {
+        binding.distanceInInches.text = screenState.inc
+        binding.distanceInCentimeters.text = screenState.cm
+
+        binding.screenStateResult.isVisible = true
+    }
+
+    private fun error(message: String) {
+        binding.errorText.text = message
+        binding.errorText.isVisible = true
+    }
+
     private fun startSession() {
         checkArCore {
             binding.glSurfaceView.onResume()
@@ -280,42 +331,6 @@ class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
             }
 
             requireActivity().finish()
-        }
-    }
-
-    private fun checkCameraState(frame: Frame, camera: Camera) {
-        val statePaused = camera.trackingState == TrackingState.PAUSED
-        val reasonInsufficientLight = camera.trackingFailureReason == TrackingFailureReason.INSUFFICIENT_LIGHT
-        val isDark = statePaused && reasonInsufficientLight
-
-        when {
-            binding.popUpContainer.isVisible -> {}
-
-            isDark -> {
-                hideTopButtons()
-                hideFindSurface()
-                hideAddPointButton()
-
-                showTooDark()
-            }
-
-            !hasTrackingPlane() -> {
-                hideTooDark()
-                hideAddPointButton()
-
-                showTopButtons()
-                showFindSurface()
-            }
-
-            hasTrackingPlane() -> {
-                hideFindSurface()
-                hideTooDark()
-
-                showTopButtons()
-                showAddPointButton()
-
-                drawRuler(frame, camera)
-            }
         }
     }
 
@@ -358,7 +373,7 @@ class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
             }
 
             if (message != null) {
-                showError(message)
+                viewModel.showError(message)
                 return
             }
         }
@@ -366,7 +381,7 @@ class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
         try {
             session?.resume()
         } catch (e: CameraNotAvailableException) {
-            showError("Camera not available. Try restarting the app.")
+            viewModel.showError("Camera not available. Try restarting the app.")
             session = null
             return
         }
@@ -378,13 +393,6 @@ class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
         centerTap(frame, camera) { it.also { anchorGoal = it } }
 
         when {
-            !addPointA -> {
-                lifecycleScope.launch(Dispatchers.Main) {
-                    binding.descriptionAddPointButton.text = stringValue.addPointA
-                    binding.addPointButton.text = stringValue.a
-                }
-            }
-
             addPointA && anchorPointA == null -> {
                 lifecycleScope.launch(Dispatchers.Main) {
                     binding.descriptionAddPointButton.text = stringValue.addPointB
@@ -440,7 +448,7 @@ class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
 
             anchorPointA != null && anchorPointB != null -> {
                 drawLine(viewMatrix, projectionMatrix, anchorPointA, anchorPointB)
-                measureDistanceOf2Points()
+                viewModel.measureDistanceOf2Points(anchorPointA, anchorPointB)
             }
         }
     }
@@ -499,110 +507,6 @@ class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
         )
     }
 
-    private fun hasTrackingPlane(): Boolean {
-        session?.let {
-            for (plane: Plane? in it.getAllTrackables(Plane::class.java)) {
-                if (plane?.trackingState == TrackingState.TRACKING) {
-                    return true
-                }
-            }
-        }
-
-        return false
-    }
-
-    private fun showAddPointButton() {
-        if (!binding.addPointButtonGroup.isVisible) {
-            lifecycleScope.launch(Dispatchers.Main) {
-                binding.addPointButtonGroup.isVisible = true
-            }
-        }
-    }
-
-    private fun hideAddPointButton() {
-        if (binding.addPointButtonGroup.isVisible) {
-            lifecycleScope.launch(Dispatchers.Main) {
-                binding.addPointButtonGroup.isVisible = false
-            }
-        }
-    }
-
-    private fun showTopButtons() {
-        if (!binding.topButtons.isVisible) {
-            lifecycleScope.launch(Dispatchers.Main) {
-                binding.topButtons.isVisible = true
-            }
-        }
-    }
-
-    private fun hideTopButtons() {
-        if (binding.topButtons.isVisible) {
-            lifecycleScope.launch(Dispatchers.Main) {
-                binding.topButtons.isVisible = false
-            }
-        }
-    }
-
-    private fun showFindSurface() {
-        if (!binding.findSurfaceContainer.isVisible) {
-            lifecycleScope.launch(Dispatchers.Main) {
-                binding.findSurfaceContainer.isVisible = true
-            }
-        }
-    }
-
-    private fun hideFindSurface() {
-        if (binding.findSurfaceContainer.isVisible) {
-            lifecycleScope.launch(Dispatchers.Main) {
-                binding.findSurfaceContainer.isVisible = false
-            }
-        }
-    }
-
-    private fun showTooDark() {
-        if (!binding.tooDarkContainer.isVisible) {
-            lifecycleScope.launch(Dispatchers.Main) {
-                binding.tooDarkContainer.isVisible = true
-            }
-        }
-    }
-
-    private fun hideTooDark() {
-        if (binding.tooDarkContainer.isVisible) {
-            lifecycleScope.launch(Dispatchers.Main) {
-                binding.tooDarkContainer.isVisible = false
-            }
-        }
-    }
-
-    private fun showPopUp() {
-        if (!binding.popUpContainer.isVisible) {
-            lifecycleScope.launch(Dispatchers.Main) {
-                binding.popUpContainer.isVisible = true
-            }
-        }
-    }
-
-    private fun hidePopUp() {
-        if (binding.popUpContainer.isVisible) {
-            lifecycleScope.launch(Dispatchers.Main) {
-                binding.popUpContainer.isVisible = false
-            }
-        }
-    }
-
-    private fun showError(message: String) {
-        lifecycleScope.launch(Dispatchers.Main) {
-            hideAddPointButton()
-            hideFindSurface()
-            hideTooDark()
-            hidePopUp()
-
-            binding.errorText.text = message
-            binding.errorText.isVisible = true
-        }
-    }
-
     private fun addPoint() {
         when {
             anchorPointA == null -> addPointA = true
@@ -619,69 +523,11 @@ class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
         addPointA = false
         addPointB = false
 
-        hidePopUp()
-
-        showAddPointButton()
-        showTopButtons()
+        viewModel.reset()
 
         /*if (future != null) {
             future?.cancel()
             future = null
         }*/
-    }
-
-    private fun measureDistanceOf2Points() {
-        if (binding.popUpContainer.isVisible) return
-
-        lifecycleScope.launch(Dispatchers.Main) {
-            val distanceMeter = calculateDistance(
-                AnchorNode(anchorPointA).worldPosition,
-                AnchorNode(anchorPointB).worldPosition,
-            )
-
-            measureDistanceOf2Points(distanceMeter)
-        }
-    }
-
-    private fun measureDistanceOf2Points(distanceMeter: Float) {
-        val distanceInCentimeters = "${distanceInCentimeters(distanceMeter)} ${stringValue.popUpCentimeters}"
-
-        binding.distanceInInches.text = distanceInInches(distanceMeter)
-        binding.distanceInCentimeters.text = distanceInCentimeters
-
-
-        hideAddPointButton()
-        hideTopButtons()
-
-        showPopUp()
-    }
-
-    private fun distanceInCentimeters(distanceMeter: Float): String {
-        return "%.1f".format(changeUnit(distanceMeter, "cm"))
-    }
-
-    private fun distanceInInches(distanceMeter: Float): String {
-        return "%.1f".format(changeUnit(distanceMeter, "in"))
-    }
-
-    private fun changeUnit(distanceMeter: Float, unit: String): Float {
-        return when (unit) {
-            "in" -> distanceMeter * 100f / 2.54f
-            "cm" -> distanceMeter * 100f
-//            "mm" -> distanceMeter * 1000f
-            else -> distanceMeter
-        }
-    }
-
-    private fun calculateDistance(objectPose0: Vector3, objectPose1: Vector3): Float {
-        return calculateDistance(
-            objectPose0.x - objectPose1.x,
-            objectPose0.y - objectPose1.y,
-            objectPose0.z - objectPose1.z
-        )
-    }
-
-    private fun calculateDistance(x: Float, y: Float, z: Float): Float {
-        return sqrt(x.pow(2) + y.pow(2) + z.pow(2))
     }
 }
