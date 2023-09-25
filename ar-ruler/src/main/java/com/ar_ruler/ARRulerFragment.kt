@@ -1,7 +1,6 @@
 package com.ar_ruler
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -24,7 +23,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.ar_ruler.databinding.FragmentArRulerBinding
 import com.ar_ruler.halpers.DisplayRotationHelper
-import com.ar_ruler.halpers.TapHelper
 import com.ar_ruler.rendering.BackgroundRenderer
 import com.ar_ruler.rendering.LineRenderer
 import com.ar_ruler.rendering.ObjectRenderer
@@ -211,9 +209,7 @@ class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
         )
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun initGLSurfaceView() {
-        binding.glSurfaceView.setOnTouchListener(TapHelper(requireContext()))
         binding.glSurfaceView.preserveEGLContextOnPause = true
         binding.glSurfaceView.setEGLContextClientVersion(2)
         binding.glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0) // Alpha used for plane blending.
