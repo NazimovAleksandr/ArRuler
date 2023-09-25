@@ -3,7 +3,6 @@ package com.ar_ruler
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.net.Uri
@@ -204,7 +203,10 @@ class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
         binding.popUpButton.paint.shader = LinearGradient(
             0f, 0f, 0f,
             binding.popUpButton.textSize,
-            intArrayOf(Color.parseColor("#FFFFFF"), Color.parseColor("#C0E1FF")),
+            intArrayOf(
+                resources.getColor(R.color.white, null),
+                resources.getColor(R.color.light_blue, null),
+            ),
             null, Shader.TileMode.CLAMP
         )
     }
