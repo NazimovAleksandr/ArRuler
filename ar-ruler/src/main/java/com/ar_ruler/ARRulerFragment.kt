@@ -271,10 +271,12 @@ class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
         binding.screenStateTooDark.isVisible = false
         binding.screenStateAddPoint.isVisible = false
         binding.screenStateResult.isVisible = false
+        binding.topButtons.isVisible = false
     }
 
     private fun findSurface() {
         binding.screenStateFindSurface.isVisible = true
+        binding.topButtons.isVisible = true
     }
 
     private fun tooDark() {
@@ -285,6 +287,7 @@ class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
         binding.descriptionAddPointButton.text = stringValue.addPointA
         binding.addPointButton.text = stringValue.a
         binding.screenStateAddPoint.isVisible = true
+        binding.topButtons.isVisible = true
     }
 
     private fun result(screenState: ScreenState.Result) {

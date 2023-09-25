@@ -12,7 +12,6 @@
         android:layout_height="0dp"
         android:visibility="gone"
         app:constraint_referenced_ids="
-        top_buttons,
         find_surface_container" />
 
     <androidx.constraintlayout.widget.Group
@@ -37,7 +36,6 @@
         android:layout_height="0dp"
         android:visibility="gone"
         app:constraint_referenced_ids="
-        top_buttons,
         description_add_point_button,
         add_point_button_shadow,
         add_point_button_container" />
@@ -46,6 +44,7 @@
         android:id="@+id/top_buttons"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:constraint_referenced_ids="
         back_button,
         tutorial_button" />
