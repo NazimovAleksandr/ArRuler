@@ -18,3 +18,4 @@ dependencyResolutionManagement {
 rootProject.name = "ArRuler"
 include(":app")
 include(":ar-ruler")
+include(":never-sleep")

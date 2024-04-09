@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.ar_ruler.ARRulerActivity
 import com.ar_ruler.StringValue
+import com.never_sleep.NeverSleepActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,6 +17,12 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.ruler_button).also {
             it.setOnClickListener {
                 openArRulerActivity("Move Around")
+            }
+        }
+
+        findViewById<Button>(R.id.samsung_never_sleep).also {
+            it.setOnClickListener {
+                NeverSleepActivity.start(this)
             }
         }
     }
