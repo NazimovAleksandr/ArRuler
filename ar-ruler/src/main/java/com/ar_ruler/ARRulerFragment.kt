@@ -226,7 +226,7 @@ class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
         }
 
         binding.backButton.setOnClickListener {
-            requireActivity().onBackPressed()
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
         binding.popUpButtonReset.setOnClickListener {
@@ -234,7 +234,7 @@ class ARRulerFragment : Fragment(), GLSurfaceView.Renderer {
         }
 
         binding.popUpButtonCloseRuler.setOnClickListener {
-            requireActivity().onBackPressed()
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
         binding.popUpButton.setOnClickListener {
